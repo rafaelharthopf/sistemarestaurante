@@ -1,103 +1,91 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { ChefHat, Store, ShieldCheck, Users, UtensilsCrossed } from 'lucide-react';
+
+export default function HomePage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <>
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex flex-col relative overflow-hidden text-gray-800">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23e2e8f0\' fill-opacity=\'0.2\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20 z-0 pointer-events-none"></div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+      <header className="z-10 w-full flex items-center justify-between px-8 py-4 bg-white/80 shadow-sm backdrop-blur-sm">
+        <div className="flex items-center space-x-3">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl">
+            <ChefHat className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-xl font-bold text-gray-800">Sistema de Restaurantes</h1>
+        </div>
+        <a
+          href="/login"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Login
+        </a>
+      </header>
+
+      <section className="relative z-10 flex flex-col md:flex-row items-center justify-between px-8 md:px-20 py-16 space-y-12 md:space-y-0">
+        <div className="max-w-xl">
+          <h2 className="text-5xl font-extrabold mb-6 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+            Plataforma Completa e Segura para Gestão de Restaurantes
+          </h2>
+          <p className="text-gray-700 text-lg mb-8">
+            Controle integral de suas unidades, gestão de pedidos por estação, monitoramento de relatórios e gestão de equipes em um ambiente seguro, ágil e preparado para franquias e redes de qualquer porte. Reduza custos, aumente a produtividade e tenha uma visão completa do seu negócio em tempo real.
+          </p>
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/login"
+            className="inline-block bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+            Acessar Sistema
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
+
+        <div className="w-full md:w-[420px]">
+          <img
             src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+            alt="Restaurante"
+            className="w-full max-w-sm mx-auto"
           />
-          Go to nextjs.org →
-        </a>
+
+        </div>
+      </section>
+
+      <section className="bg-white py-16 px-8 md:px-20 text-center">
+        <h3 className="text-3xl font-bold mb-12 text-gray-800">Funcionalidades Avançadas</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-left">
+          <div className="flex items-start space-x-4">
+            <Store className="text-blue-600 w-35 h-25" />
+            <div>
+              <h4 className="font-semibold text-lg">Multi-Empresas e Franquias</h4>
+              <p className="text-sm text-gray-600">Gerencie diversas unidades de sua rede em um único painel intuitivo, garantindo controle unificado de dados, relatórios detalhados por loja e acompanhamento de desempenho individual ou consolidado de suas franquias em tempo real.</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-4">
+            <UtensilsCrossed className="text-indigo-600 w-35 h-25" />
+            <div>
+              <h4 className="font-semibold text-lg">Gestão Avançada de Pedidos</h4>
+              <p className="text-sm text-gray-600">Organize pedidos por setores (cozinha, drinks, sobremesas) e acompanhe cada etapa com precisão, melhorando o tempo de preparo e garantindo maior satisfação ao cliente em cada pedido realizado.</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-4">
+            <Users className="text-purple-600 w-35 h-25" />
+            <div>
+              <h4 className="font-semibold text-lg">Controle de Usuários e Permissões</h4>
+              <p className="text-sm text-gray-600">Gerencie facilmente os acessos de garçons, cozinheiros, gerentes e administradores, configurando permissões personalizadas e garantindo segurança e rastreabilidade nas operações realizadas no sistema.</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-4">
+            <ShieldCheck className="text-green-600 w-35 h-25" />
+            <div>
+              <h4 className="font-semibold text-lg">Segurança e Proteção de Dados</h4>
+              <p className="text-sm text-gray-600">Ambiente seguro, com criptografia e separação de dados entre empresas, mantendo a confidencialidade das informações de cada unidade, garantindo conformidade com a LGPD e tranquilidade para o seu negócio crescer de forma sustentável.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+          <footer className="text-center py-6 text-sm text-gray-500">
+        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
       </footer>
-    </div>
+    </>
   );
 }
