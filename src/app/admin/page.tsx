@@ -6,6 +6,8 @@ import Navbar from '@/components/Navbar';
 import { getCurrentUser } from '@/lib/auth';
 import { companies, addCompany } from '@/mock/companies';
 import { users, addUser } from '@/mock/users';
+import { roles } from '@/mock/roles';
+
 
 export default function AdminPage() {
   const router = useRouter();
@@ -16,6 +18,8 @@ export default function AdminPage() {
   const [newUserEmail, setNewUserEmail] = useState('');
   const [newUserCompanyId, setNewUserCompanyId] = useState<number | ''>('');
   const [newUserIsAdmin, setNewUserIsAdmin] = useState(false);
+  const [newUserRoleId, setNewUserRoleId] = useState<number | ''>('');
+
 
   const [companyList, setCompanyList] = useState(companies);
   const [userList, setUserList] = useState(users);
@@ -36,21 +40,24 @@ export default function AdminPage() {
 
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newUserName.trim() || !newUserEmail.trim() || !newUserCompanyId) {
+    if (!newUserName.trim() || !newUserEmail.trim() || !newUserCompanyId || !newUserRoleId) {
       return alert('Preencha todos os campos do usuário');
     }
     const added = addUser({
       name: newUserName.trim(),
       email: newUserEmail.trim(),
       companyId: Number(newUserCompanyId),
+      roleId: Number(newUserRoleId),
       isAdmin: newUserIsAdmin,
     });
     setUserList([...userList, added]);
     setNewUserName('');
     setNewUserEmail('');
     setNewUserCompanyId('');
+    setNewUserRoleId('');
     setNewUserIsAdmin(false);
   };
+
 
   return (
     <>
@@ -122,6 +129,17 @@ export default function AdminPage() {
                     </option>
                   ))}
                 </select>
+                <select
+                  value={newUserRoleId}
+                  onChange={(e) => setNewUserRoleId(Number(e.target.value))}
+                  className="border rounded p-2 w-full mb-2"
+                >
+                  <option value="">Selecione o cargo</option>
+                  {roles.map((role) => (
+                    <option key={role.id} value={role.id}>{role.name}</option>
+                  ))}
+                </select>
+
                 <label className="inline-flex items-center gap-2 text-sm text-gray-600">
                   <input
                     type="checkbox"
