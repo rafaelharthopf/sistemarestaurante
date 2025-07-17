@@ -11,6 +11,7 @@ export function login(email: string) {
   }
 
   if (user.companyId === 0 && user.isAdmin) {
+    currentUser = user; 
     return { user, error: null };
   }
 
@@ -20,8 +21,10 @@ export function login(email: string) {
     return { user: null, error: 'INACTIVE_COMPANY' };
   }
 
+  currentUser = user;
   return { user, error: null };
 }
+
 
 
 export function getCurrentUser() {
