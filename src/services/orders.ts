@@ -8,7 +8,13 @@ export type Order = {
 };
 
 export async function fetchOrders(): Promise<Order[]> {
-  const res = await fetch('https://api-sistema-restaurante.onrender.com/orders', { cache: 'no-store' });
+  const res = await fetch('https://api-sistema-restaurante.onrender.com/orders', { 
+    cache: 'no-store',
+    headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+    }
+  });
   if (!res.ok) throw new Error('Erro ao buscar pedidos');
   return res.json();
 }
@@ -21,7 +27,10 @@ export async function createOrder(data: {
 }): Promise<Order> {
   const res = await fetch('https://api-sistema-restaurante.onrender.com/orders', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+    },
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error('Erro ao criar pedido');
@@ -33,7 +42,10 @@ export type OrderStatus = "Em preparo" | "Pronto" | "Entregue";
 export async function updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
   const res = await fetch(`https://api-sistema-restaurante.onrender.com/orders/${id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json', 
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+    },
     body: JSON.stringify({ status }),
   });
   if (!res.ok) throw new Error('Erro ao atualizar status do pedido');

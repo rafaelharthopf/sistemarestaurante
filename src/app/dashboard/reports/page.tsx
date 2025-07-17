@@ -32,7 +32,12 @@ export default function ReportsPage() {
       const companyId = 1;
 
       try {
-        const res = await fetch(`https://api-sistema-restaurante.onrender.com/reports/${companyId}`);
+        const res = await fetch(`https://api-sistema-restaurante.onrender.com/reports/${companyId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+          }
+        });
         if (!res.ok) {
           console.error('Erro ao buscar relatórios');
           return;

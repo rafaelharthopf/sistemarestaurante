@@ -5,7 +5,13 @@ export type Company = {
 };
 
 export async function fetchCompanies(): Promise<Company[]> {
-  const res = await fetch('https://api-sistema-restaurante.onrender.com/companies', { cache: 'no-store' });
+  const res = await fetch('https://api-sistema-restaurante.onrender.com/companies', {
+    cache: 'no-store',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+    },
+  });
   if (!res.ok) throw new Error('Erro ao buscar empresas');
   return res.json();
 }
@@ -16,6 +22,7 @@ export async function createCompany(name: string): Promise<Company> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
     },
     body: JSON.stringify({
       name,
@@ -32,6 +39,7 @@ export async function updateCompany(id: number, data: Partial<Company>): Promise
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
     },
     body: JSON.stringify(data),
   });
