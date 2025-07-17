@@ -11,7 +11,8 @@ export async function fetchCompanies(): Promise<Company[]> {
     cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
     },
   });
 
