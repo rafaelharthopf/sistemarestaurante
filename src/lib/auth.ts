@@ -4,8 +4,18 @@ const API_URL = 'https://api-sistema-restaurante.onrender.com';
 
 export async function login(email: string, password: string) {
   try {
-    const response = await axios.post(`${API_URL}/login`, { email, password });
-    console.log(response.data)
+    const response = await axios.post(
+      `${API_URL}/login`,
+      { email, password },
+      {
+        headers: {
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log(response.data);
 
     const data = response.data;
 
