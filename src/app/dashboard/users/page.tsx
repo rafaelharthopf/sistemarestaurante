@@ -4,30 +4,42 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
-import { users } from '@/mock/users';
-import Footer from '@/components/Footer'
-
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  companyId: number;
-  isAdmin?: boolean;
-};
+import Footer from '@/components/Footer';
+import { fetchUsers, User1 } from '@/services/users';
 
 export default function UsersPage() {
   const router = useRouter();
-  const user = getCurrentUser();
-  const [companyUsers, setCompanyUsers] = useState<User[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [companyUsers, setCompanyUsers] = useState<User1[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    const currentUser = getCurrentUser();
+
+    if (!currentUser) {
       router.push('/login');
       return;
     }
-    const filteredUsers = users.filter(u => u.companyId === user.companyId);
-    setCompanyUsers(filteredUsers);
-  }, [user]);
+
+    setUser(currentUser);
+
+    async function loadUsers() {
+      try {
+        const allUsers = await fetchUsers();
+        const filtered = allUsers.filter(u => u.companyId === currentUser.companyId);
+        setCompanyUsers(filtered);
+      } catch (error) {
+        console.error('Erro ao buscar usuários:', error);
+        setCompanyUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUsers();
+  }, [router]);
+
+  if (loading) return <p className="text-center mt-10">Carregando usuários...</p>;
 
   return (
     <>
@@ -51,7 +63,6 @@ export default function UsersPage() {
                     <p className="text-gray-600 text-sm">{email}</p>
                     <p className="text-gray-600 text-sm italic">{isAdmin ? 'Administrador' : 'Funcionário'}</p>
                   </div>
-
                   <button className="text-blue-600 hover:text-blue-800 flex items-center text-sm">
                     Editar
                   </button>
@@ -61,7 +72,6 @@ export default function UsersPage() {
           </div>
         </div>
       </main>
-      
       <Footer />
     </>
   );

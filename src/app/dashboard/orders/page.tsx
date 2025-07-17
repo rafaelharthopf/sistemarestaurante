@@ -1,61 +1,138 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
-import { orders } from '@/mock/orders';
+import Footer from '@/components/Footer';
 import { Clock4, CheckCircle, CookingPot } from 'lucide-react';
 import classNames from 'classnames';
-import Footer from '@/components/Footer'
+import { fetchOrders, createOrder, updateOrderStatus, Order, OrderStatus } from '@/services/orders';
 
 export default function OrdersPage() {
   const router = useRouter();
   const user = getCurrentUser();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [table, setTable] = useState('');
+  const [items, setItems] = useState('');
 
   useEffect(() => {
     if (!user) {
       router.push('/login');
+      return;
     }
-  }, [user]);
 
-  // Filtra os pedidos pela empresa do usuário
-  const filteredOrders = orders.filter(order => order.companyId === user?.companyId);
+    async function loadOrders() {
+      try {
+        const allOrders = await fetchOrders();
+        const filtered = allOrders.filter(order => order.companyId === user.companyId);
+        setOrders(filtered);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadOrders();
+  }, [router, user]);
+
+  const handleCreateOrder = async () => {
+    if (!table || !items) return;
+    try {
+      const newOrder = await createOrder({
+        table,
+        items: items.split(',').map(item => item.trim()),
+        status: 'Em preparo',
+        companyId: user.companyId,
+      });
+      setOrders(prev => [...prev, newOrder]);
+      setTable('');
+      setItems('');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUpdateStatus = async (order: Order) => {
+  let nextStatus: OrderStatus;
+
+  if (order.status === 'Em preparo') nextStatus = 'Pronto';
+  else if (order.status === 'Pronto') nextStatus = 'Entregue';
+  else return;
+
+  try {
+    console.log(`Atualizando pedido ${order.id} para status ${nextStatus}`);
+    const updatedOrder = await updateOrderStatus(order.id, nextStatus);
+    setOrders(prev => prev.map(o => (o.id === updatedOrder.id ? updatedOrder : o)));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+  if (loading) return <p className="text-center mt-10">Carregando pedidos...</p>;
 
   return (
     <>
       <Navbar />
       <main className="min-h-screen bg-slate-50 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Pedidos</h1>
-          <p className="text-gray-600 mb-8">Acompanhe e gerencie os pedidos em tempo real.</p>
+        <div className="max-w-4xl mx-auto space-y-8">
+          <h1 className="text-3xl font-bold text-gray-800">Pedidos</h1>
 
-          {filteredOrders.length === 0 ? (
-            <p className="text-gray-500">Nenhum pedido encontrado para esta empresa.</p>
+          <div className="bg-black p-6 rounded-xl shadow space-y-4">
+            <h2 className="text-lg font-semibold">Criar novo pedido</h2>
+            <input
+              type="text"
+              placeholder="Mesa"
+              value={table}
+              onChange={e => setTable(e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+            <input
+              type="text"
+              placeholder="Itens (separados por vírgula)"
+              value={items}
+              onChange={e => setItems(e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+            <button
+              onClick={handleCreateOrder}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            >
+              Criar Pedido
+            </button>
+          </div>
+
+          {orders.length === 0 ? (
+            <p className="text-gray-800">Nenhum pedido encontrado para esta empresa.</p>
           ) : (
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {filteredOrders.map((order) => (
-                <div key={order.id} className="bg-white rounded-xl shadow-md border border-gray-100 p-6 space-y-3">
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+              {orders.map(order => (
+                <div
+                  key={order.id}
+                  className="bg-black p-5 rounded-xl shadow space-y-2"
+                >
                   <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-semibold text-gray-800">{order.table}</h2>
-                    <span className="text-sm text-gray-500">
-                      <Clock4 className="inline-block w-4 h-4 mr-1" />
-                      {order.createdAt}
+                    <span className="font-semibold">{order.table}</span>
+                    <span className="text-sm text-gray-300">
+                      <Clock4 className="inline w-4 h-4 mr-1" />
+                      {new Date(order.createdAt).toLocaleString('pt-BR')}
                     </span>
                   </div>
-
-                  <ul className="text-gray-700 text-sm space-y-1">
-                    {order.items.map((item, i) => (
-                      <li key={i}>• {item}</li>
+                  <ul className="text-sm text-gray-100">
+                    {order.items.map((item, idx) => (
+                      <li key={idx}>• {item}</li>
                     ))}
                   </ul>
-
-                  <span
+                  <button
+                    onClick={() => handleUpdateStatus(order)}
                     className={classNames(
-                      'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium',
+                      'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition',
                       {
-                        'bg-yellow-100 text-yellow-800': order.status === 'Em preparo',
-                        'bg-green-100 text-green-800': order.status === 'Pronto',
+                        'bg-yellow-100 text-yellow-800 hover:bg-yellow-200': order.status === 'Em preparo',
+                        'bg-green-100 text-green-800 hover:bg-green-200': order.status === 'Pronto',
                         'bg-gray-200 text-gray-700': order.status === 'Entregue',
                       }
                     )}
@@ -64,7 +141,7 @@ export default function OrdersPage() {
                     {order.status === 'Pronto' && <CheckCircle className="w-4 h-4 mr-1" />}
                     {order.status === 'Entregue' && <span className="mr-1">✅</span>}
                     {order.status}
-                  </span>
+                  </button>
                 </div>
               ))}
             </div>

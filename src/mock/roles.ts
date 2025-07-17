@@ -5,4 +5,4 @@ export const roles = [
   { id: 4, name: 'Atendente' },
   { id: 5, name: 'Garçom' },
   { id: 6, name: 'Cozinheiro' },
-];
+]; 

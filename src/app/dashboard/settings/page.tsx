@@ -4,45 +4,67 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { getCurrentUser } from '@/lib/auth';
-import { companies, updateCompany } from '@/mock/companies';
-import Footer from '@/components/Footer'
+import Footer from '@/components/Footer';
+import { fetchCompanies, updateCompany } from '@/services/companies';
 
 export default function SettingsPage() {
   const router = useRouter();
   const user = getCurrentUser();
 
+  const [companyId, setCompanyId] = useState<number | null>(null);
   const [companyName, setCompanyName] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+    if (!user || hasLoaded) return;
 
-    const company = companies.find(c => c.id === user.companyId);
+    const loadCompany = async () => {
+      try {
+        const companies = await fetchCompanies();
+        const company = companies.find(c => c.id === user.companyId);
 
-    if (!company) {
-      alert('Empresa não encontrada.');
-      router.push('/dashboard');
-      return;
-    }
+        if (!company) {
+          alert('Empresa não encontrada.');
+          router.push('/dashboard');
+          return;
+        }
 
-    setCompanyName(company.name || '');
-  }, [user, router]);
+        setCompanyId(company.id);
+        setCompanyName(company.name || '');
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao carregar dados da empresa');
+      } finally {
+        setLoading(false);
+        setHasLoaded(true);
+      }
+    };
 
-  const handleSave = (e: React.FormEvent) => {
+    loadCompany();
+}, [user, hasLoaded, router]);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!companyId) {
+      alert('Empresa não identificada.');
+      return;
+    }
 
-    updateCompany?.(user?.companyId, {
-      name: companyName,
-      address,
-      phone,
-    });
-
-    alert('Configurações salvas com sucesso!');
+    try {
+      await updateCompany(companyId, {
+        name: companyName,
+      });
+      alert('Configurações salvas com sucesso!');
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao salvar configurações');
+    }
   };
+
+  if (loading) {
+    return <p className="text-center py-10">Carregando...</p>;
+  }
 
   return (
     <>
@@ -68,31 +90,6 @@ export default function SettingsPage() {
                 required
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Endereço
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-gray-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 text-gray-800"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Telefone
-              </label>
-              <input
-                type="tel"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-gray-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 text-gray-800"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-
             <div className="text-end">
               <button
                 type="submit"
@@ -104,7 +101,7 @@ export default function SettingsPage() {
           </form>
         </div>
       </main>
-     <Footer />
+      <Footer />
     </>
   );
 }

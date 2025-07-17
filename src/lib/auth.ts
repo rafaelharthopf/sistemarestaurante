@@ -1,36 +1,39 @@
-import { users } from '@/mock/users';
-import { companies } from '@/mock/companies';
+import axios from 'axios';
 
-let currentUser: any = null;
+const API_URL = 'https://api-sistema-restaurante.onrender.com';
 
-export function login(email: string) {
-  const user = users.find((u) => u.email === email);
+export async function login(email: string, password: string) {
+  try {
+    const response = await axios.post(`${API_URL}/login`, { email, password });
+    console.log(response.data)
 
-  if (!user) {
-    return { user: null, error: 'USER_NOT_FOUND' };
+    const data = response.data;
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+    }
+
+    return { user: data.user, token: data.token };
+  } catch (error: any) {
+    const message =
+      error.response?.data?.error ||
+      error.message ||
+      'Erro ao realizar login.';
+    throw new Error(message);
   }
-
-  if (user.companyId === 0 && user.isAdmin) {
-    currentUser = user; 
-    return { user, error: null };
-  }
-
-  const company = companies.find(c => c.id === user.companyId);
-
-  if (!company || company.isActive !== 1) {
-    return { user: null, error: 'INACTIVE_COMPANY' };
-  }
-
-  currentUser = user;
-  return { user, error: null };
 }
 
-
-
 export function getCurrentUser() {
-  return currentUser;
+  if (typeof window === 'undefined') return null;
+
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
 }
 
 export function logout() {
-  currentUser = null;
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
 }

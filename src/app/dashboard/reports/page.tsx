@@ -10,72 +10,44 @@ import {
 } from 'recharts';
 import Footer from '@/components/Footer'
 
-type VendaPorDia = { dia: string; vendas: number };
-type PratoMaisVendido = { nome: string; vendas: number };
-const relatoriosPorEmpresa = {
-  1: {
-    vendasPorDia: [
-      { dia: 'Seg', vendas: 200 },
-      { dia: 'Ter', vendas: 350 },
-      { dia: 'Qua', vendas: 300 },
-      { dia: 'Qui', vendas: 400 },
-      { dia: 'Sex', vendas: 600 },
-      { dia: 'Sáb', vendas: 900 },
-      { dia: 'Dom', vendas: 750 },
-    ],
-    pratosMaisVendidos: [
-      { nome: 'Picanha na Chapa', vendas: 150 },
-      { nome: 'Feijoada', vendas: 120 },
-      { nome: 'Coca-Cola', vendas: 100 },
-      { nome: 'Caipirinha', vendas: 80 },
-    ]
-  },
-  2: {
-    vendasPorDia: [
-      { dia: 'Seg', vendas: 180 },
-      { dia: 'Ter', vendas: 260 },
-      { dia: 'Qua', vendas: 310 },
-      { dia: 'Qui', vendas: 490 },
-      { dia: 'Sex', vendas: 530 },
-      { dia: 'Sáb', vendas: 710 },
-      { dia: 'Dom', vendas: 690 },
-    ],
-    pratosMaisVendidos: [
-      { nome: 'Lasanha', vendas: 110 },
-      { nome: 'Salada Caesar', vendas: 85 },
-      { nome: 'Pizza Margherita', vendas: 140 },
-      { nome: 'Suco Natural', vendas: 60 },
-    ]
-  }
+type VendaPorDia = {
+  dia: string;
+  vendas: number;
+};
+
+type PratoMaisVendido = {
+  nome: string;
+  vendas: number;
 };
 
 const cores = ['#4F46E5', '#6366F1', '#818CF8', '#A5B4FC'];
 
-
-
 export default function ReportsPage() {
   const router = useRouter();
-  const user = getCurrentUser();
-
   const [vendasPorDia, setVendasPorDia] = useState<VendaPorDia[]>([]);
   const [pratosMaisVendidos, setPratosMaisVendidos] = useState<PratoMaisVendido[]>([]);
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+    const fetchData = async () => {
+      const companyId = 1;
 
-    const dados = relatoriosPorEmpresa[user.companyId as keyof typeof relatoriosPorEmpresa];
+      try {
+        const res = await fetch(`https://api-sistema-restaurante.onrender.com/reports/${companyId}`);
+        if (!res.ok) {
+          console.error('Erro ao buscar relatórios');
+          return;
+        }
 
-    if (!dados) {
-      setVendasPorDia([]);
-      setPratosMaisVendidos([]);
-    } else {
-      setVendasPorDia(dados.vendasPorDia);
-      setPratosMaisVendidos(dados.pratosMaisVendidos);
-    }
-  }, [user, router]);
+        const data = await res.json();
+        setVendasPorDia(data.vendasPorDia);
+        setPratosMaisVendidos(data.pratosMaisVendidos);
+      } catch (err) {
+        console.error('Erro ao buscar dados:', err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>

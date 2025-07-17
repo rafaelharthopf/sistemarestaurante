@@ -1,22 +1,55 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
-import { orders } from '@/mock/orders';
+import Footer from '@/components/Footer';
 import { CookingPot, CheckCircle, Timer } from 'lucide-react';
-import Footer from '@/components/Footer'
+import { fetchOrders, updateOrderStatus, Order, OrderStatus } from '@/services/orders';
 
 export default function KitchenPage() {
   const router = useRouter();
   const user = getCurrentUser();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
       router.push('/login');
+      return;
     }
-  }, [user]);
+
+    const loadOrders = async () => {
+      try {
+        const allOrders = await fetchOrders();
+        const filtered = allOrders.filter(order => order.companyId === user.companyId);
+        setOrders(filtered);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadOrders();
+  }, [user, router]);
+
+  const handleUpdateStatus = async (order: Order) => {
+    let nextStatus: OrderStatus;
+
+    if (order.status === 'Em preparo') nextStatus = 'Pronto';
+    else if (order.status === 'Pronto') nextStatus = 'Entregue';
+    else return;
+
+    try {
+      const updated = await updateOrderStatus(order.id, nextStatus);
+      console.log('Pedido atualizado:', updated);
+      setOrders(prev => prev.map(o => (o.id === updated.id ? updated : o)));
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+    }
+  };
 
   const statusColumns = [
     { label: 'Em preparo', icon: <CookingPot className="w-4 h-4 mr-1" />, color: 'bg-yellow-100' },
@@ -24,7 +57,7 @@ export default function KitchenPage() {
     { label: 'Entregue', icon: <span className="mr-1">✅</span>, color: 'bg-gray-200' },
   ];
 
-  const filteredOrders = orders.filter((order) => order.companyId === user?.companyId);
+  if (loading) return <p className="text-center mt-10">Carregando pedidos...</p>;
 
   return (
     <>
@@ -36,7 +69,7 @@ export default function KitchenPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {statusColumns.map(({ label, icon, color }) => {
-              const filtered = filteredOrders.filter((order) => order.status === label);
+              const filtered = orders.filter(order => order.status === label);
 
               return (
                 <div key={label} className="bg-white border border-gray-100 rounded-xl shadow-sm p-4">
@@ -50,8 +83,12 @@ export default function KitchenPage() {
                   {filtered.length === 0 ? (
                     <p className="text-gray-400 italic">Nenhum pedido</p>
                   ) : (
-                    filtered.map((order) => (
-                      <div key={order.id} className="border rounded-lg p-3 mb-4 bg-gray-50">
+                    filtered.map(order => (
+                      <button
+                        key={order.id}
+                        onClick={() => handleUpdateStatus(order)}
+                        className="w-full text-left border rounded-lg p-3 mb-4 bg-gray-50 hover:bg-gray-100 transition"
+                      >
                         <p className="font-semibold text-gray-800">{order.table}</p>
                         <ul className="text-sm text-gray-600 mb-2">
                           {order.items.map((item, idx) => (
@@ -59,9 +96,10 @@ export default function KitchenPage() {
                           ))}
                         </ul>
                         <span className="text-xs text-gray-500 flex items-center">
-                          <Timer className="w-4 h-4 mr-1" /> {order.createdAt}
+                          <Timer className="w-4 h-4 mr-1" /> {new Date(order.createdAt).toLocaleString('pt-BR')}
                         </span>
-                      </div>
+                        <p className="text-xs text-gray-400 mt-1 italic">Clique para atualizar o status</p>
+                      </button>
                     ))
                   )}
                 </div>
