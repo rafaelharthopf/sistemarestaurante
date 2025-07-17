@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import { orders } from '@/mock/orders';
 import { Clock4, CheckCircle, CookingPot } from 'lucide-react';
 import classNames from 'classnames';
+import Footer from '@/components/Footer'
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -70,9 +71,7 @@ export default function OrdersPage() {
           )}
         </div>
       </main>
-      <footer className="text-center py-6 text-sm text-gray-500">
-        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
-      </footer>
+      <Footer />
     </>
   );
 }

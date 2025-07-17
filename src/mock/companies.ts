@@ -1,11 +1,12 @@
 // src/mock/companies.ts
 export let companies = [
-  { id: 1, name: 'Pizzaria do João' },
-  { id: 2, name: 'Restaurante Bom Sabor' },
+  { id: 1, name: 'Pizzaria do João', isActive: 1 },
+  { id: 2, name: 'Restaurante Bom Sabor', isActive: 1 },
+  { id: 3, name: 'Restaurante DomQuixote', isActive: 0 },
 ];
 
 export function addCompany(name: string) {
-  const newCompany = { id: companies.length + 1, name };
+  const newCompany = { id: companies.length + 1, name,  isActive: 1};
   companies = [...companies, newCompany];
   return newCompany;
 }

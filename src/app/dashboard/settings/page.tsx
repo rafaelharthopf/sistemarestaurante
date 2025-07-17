@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { getCurrentUser } from '@/lib/auth';
 import { companies, updateCompany } from '@/mock/companies';
+import Footer from '@/components/Footer'
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -103,9 +104,7 @@ export default function SettingsPage() {
           </form>
         </div>
       </main>
-      <footer className="text-center py-6 text-sm text-gray-500">
-        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
-      </footer>
+     <Footer />
     </>
   );
 }

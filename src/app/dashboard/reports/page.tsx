@@ -8,6 +8,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell
 } from 'recharts';
+import Footer from '@/components/Footer'
 
 type VendaPorDia = { dia: string; vendas: number };
 type PratoMaisVendido = { nome: string; vendas: number };
@@ -123,9 +124,7 @@ export default function ReportsPage() {
           </div>
         </div>
       </main>
-      <footer className="text-center py-6 text-sm text-gray-500">
-        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
-      </footer>
+      <Footer />
     </>
   );
 }

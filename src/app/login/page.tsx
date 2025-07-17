@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/lib/auth';
 import { Eye, EyeOff, Mail, Lock, ChefHat, Shield } from 'lucide-react';
+import Footer from '@/components/Footer'
 
 
 export default function LoginPage() {
@@ -20,23 +21,29 @@ export default function LoginPage() {
 
 
   const handleLogin = async () => {
-    setIsLoading(true);
-    setError('');
+  setIsLoading(true);
+  setError('');
 
-    try {
-      const user = login(email);
-      if (user) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        router.push(user.isAdmin ? '/admin' : '/dashboard');
+  try {
+    const result = login(email);
+
+    if (result.user) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      router.push(result.user.isAdmin ? '/admin' : '/dashboard');
+    } else {
+      if (result.error === 'INACTIVE_COMPANY') {
+        setError('A empresa vinculada a este usuário está inativa.');
       } else {
         setError('Credenciais inválidas. Verifique seu email e tente novamente.');
       }
-    } catch (err) {
-      setError('Erro ao fazer login. Tente novamente.');
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (err) {
+    setError('Erro ao fazer login. Tente novamente.');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <>    
@@ -171,9 +178,7 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-    <footer className="text-center py-6 text-sm text-gray-500">
-        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
-      </footer> 
+    <Footer />
     </>
   );
 }

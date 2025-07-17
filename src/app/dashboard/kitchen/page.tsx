@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import { orders } from '@/mock/orders';
 import { CookingPot, CheckCircle, Timer } from 'lucide-react';
+import Footer from '@/components/Footer'
 
 export default function KitchenPage() {
   const router = useRouter();
@@ -69,9 +70,7 @@ export default function KitchenPage() {
           </div>
         </div>
       </main>
-      <footer className="text-center py-6 text-sm text-gray-500">
-        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
-      </footer>
+      <Footer />
     </>
   );
 }

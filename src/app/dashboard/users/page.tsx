@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import { users } from '@/mock/users';
+import Footer from '@/components/Footer'
 
 type User = {
   id: number;
@@ -60,9 +61,8 @@ export default function UsersPage() {
           </div>
         </div>
       </main>
-      <footer className="text-center py-6 text-sm text-gray-500">
-        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
-      </footer>
+      
+      <Footer />
     </>
   );
 }

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { companies } from '@/mock/companies';
 import Navbar from '@/components/Navbar';
 import { ChefHat, ClipboardList, Utensils, Users, FileBarChart2, Settings } from 'lucide-react';
+import Footer from '@/components/Footer'
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -74,9 +75,8 @@ export default function DashboardPage() {
         </div>
         
       </main> 
-      <footer className="text-center py-6 text-sm text-gray-500">
-        © 2025 Sistema Empresarial • Solução completa e profissional para gestão moderna de restaurantes
-      </footer>
+      
+      <Footer />
     </>
   );
 }
