@@ -10,6 +10,8 @@ import {
 } from 'recharts';
 import Footer from '@/components/Footer'
 
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
+
 type VendaPorDia = {
   dia: string;
   vendas: number;
@@ -35,7 +37,7 @@ export default function ReportsPage() {
         const res = await fetch(`https://api-sistema-restaurante.onrender.com/reports/${companyId}`, {
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+            'x-api-key': API_KEY
           }
         });
         if (!res.ok) {

@@ -5,7 +5,7 @@ export type Company = {
 };
 
 const API_URL = 'https://api-sistema-restaurante.onrender.com';
-const API_KEY = '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5';
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
 
 function getAuthHeaders() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;

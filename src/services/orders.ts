@@ -7,12 +7,14 @@ export type Order = {
   companyId: number;
 };
 
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
+
 export async function fetchOrders(): Promise<Order[]> {
   const res = await fetch('https://api-sistema-restaurante.onrender.com/orders', { 
     cache: 'no-store',
     headers: {
         'Content-Type': 'application/json',
-        'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+        'x-api-key': API_KEY
     }
   });
   if (!res.ok) throw new Error('Erro ao buscar pedidos');
@@ -29,7 +31,7 @@ export async function createOrder(data: {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+      'x-api-key': API_KEY
     },
     body: JSON.stringify(data),
   });
@@ -44,7 +46,7 @@ export async function updateOrderStatus(id: number, status: OrderStatus): Promis
     method: 'PATCH',
     headers: { 
       'Content-Type': 'application/json', 
-      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+      'x-api-key': API_KEY
     },
     body: JSON.stringify({ status }),
   });

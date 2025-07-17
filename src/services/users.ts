@@ -7,13 +7,13 @@ export type User1 = {
   isAdmin?: boolean;
   password: string;
 };
-
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
 export async function fetchUsers(): Promise<User1[]> {
   const res = await fetch('https://api-sistema-restaurante.onrender.com/users', { 
     cache: 'no-store',
     headers: { 
       'Content-Type': 'application/json',
-      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+      'x-api-key': API_KEY
     },
   });
   if (!res.ok) throw new Error('Erro ao buscar usuários');

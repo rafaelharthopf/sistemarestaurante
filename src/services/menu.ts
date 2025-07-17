@@ -8,11 +8,13 @@ export interface MenuItem {
   companyId: number;
 }
 
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
+
 export async function fetchMenuItems(): Promise<MenuItem[]> {
   const res = await fetch('https://api-sistema-restaurante.onrender.com/menu', {
     headers: { 
       'Content-Type': 'application/json',
-      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+      'x-api-key': API_KEY
     },
   });
   if (!res.ok) throw new Error('Erro ao buscar menu');
@@ -24,7 +26,7 @@ export async function createMenuItem(data: Omit<MenuItem, 'id'>): Promise<MenuIt
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
+      'x-api-key': API_KEY
     },
     body: JSON.stringify(data),
   });
