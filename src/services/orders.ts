@@ -12,7 +12,7 @@ export async function fetchOrders(): Promise<Order[]> {
     cache: 'no-store',
     headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+        'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
     }
   });
   if (!res.ok) throw new Error('Erro ao buscar pedidos');
@@ -29,7 +29,7 @@ export async function createOrder(data: {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
     },
     body: JSON.stringify(data),
   });
@@ -44,7 +44,7 @@ export async function updateOrderStatus(id: number, status: OrderStatus): Promis
     method: 'PATCH',
     headers: { 
       'Content-Type': 'application/json', 
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
     },
     body: JSON.stringify({ status }),
   });

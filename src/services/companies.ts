@@ -11,8 +11,7 @@ export async function fetchCompanies(): Promise<Company[]> {
     cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
     },
   });
 
@@ -27,8 +26,7 @@ export async function createCompany(name: string): Promise<Company> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
     },
     body: JSON.stringify({
       name,
@@ -47,8 +45,7 @@ export async function updateCompany(id: number, data: Partial<Company>): Promise
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5'
     },
     body: JSON.stringify(data),
   });

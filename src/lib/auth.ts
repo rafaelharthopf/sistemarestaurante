@@ -9,7 +9,7 @@ export async function login(email: string, password: string) {
       { email, password },
       {
         headers: {
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
+          'x-api-key': '65b34eab8b65512dfe5807d654cd9c3e1a72cf06f7a8841c573a28ee3a292de5',
           'Content-Type': 'application/json',
         },
       }
