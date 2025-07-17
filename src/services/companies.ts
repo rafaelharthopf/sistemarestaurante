@@ -5,24 +5,30 @@ export type Company = {
 };
 
 export async function fetchCompanies(): Promise<Company[]> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
   const res = await fetch('https://api-sistema-restaurante.onrender.com/companies', {
     cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
+      ...(token && { 'Authorization': `Bearer ${token}` }),
     },
   });
+
   if (!res.ok) throw new Error('Erro ao buscar empresas');
   return res.json();
 }
 
-
 export async function createCompany(name: string): Promise<Company> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
   const res = await fetch('https://api-sistema-restaurante.onrender.com/companies', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
+      ...(token && { 'Authorization': `Bearer ${token}` }),
     },
     body: JSON.stringify({
       name,
@@ -35,11 +41,14 @@ export async function createCompany(name: string): Promise<Company> {
 }
 
 export async function updateCompany(id: number, data: Partial<Company>): Promise<Company> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
   const res = await fetch(`https://api-sistema-restaurante.onrender.com/companies/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string
+      'x-api-key': process.env.NEXT_PUBLIC_API_KEY as string,
+      ...(token && { 'Authorization': `Bearer ${token}` }),
     },
     body: JSON.stringify(data),
   });
