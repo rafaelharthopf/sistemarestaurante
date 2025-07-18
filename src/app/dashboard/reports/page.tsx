@@ -9,6 +9,8 @@ import {
   PieChart, Pie, Cell
 } from 'recharts';
 import Footer from '@/components/Footer'
+import { toast } from 'react-hot-toast';
+
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
 const URL_PROD = process.env.NEXT_PUBLIC_URL_PROD!;
@@ -31,31 +33,36 @@ export default function ReportsPage() {
   const [pratosMaisVendidos, setPratosMaisVendidos] = useState<PratoMaisVendido[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const companyId = 1;
+  const fetchData = async () => {
+    const companyId = 1;
 
-      try {
-        const res = await fetch(`${URL_PROD}/reports/${companyId}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY
-          }
-        });
-        if (!res.ok) {
-          console.error('Erro ao buscar relatórios');
-          return;
-        }
+    try {
+      const res = await fetch(`${URL_PROD}/reports/${companyId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': API_KEY,
+        },
+      });
 
-        const data = await res.json();
-        setVendasPorDia(data.vendasPorDia);
-        setPratosMaisVendidos(data.pratosMaisVendidos);
-      } catch (err) {
-        console.error('Erro ao buscar dados:', err);
+      if (!res.ok) {
+        toast.error('Erro ao buscar relatórios');
+        return;
       }
-    };
 
-    fetchData();
-  }, []);
+      const data = await res.json();
+      setVendasPorDia(data.vendasPorDia);
+      setPratosMaisVendidos(data.pratosMaisVendidos);
+    } catch (err: any) {
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        'Erro ao buscar dados dos relatórios.';
+      toast.error(message);
+    }
+  };
+
+  fetchData();
+}, []);
 
   return (
     <>

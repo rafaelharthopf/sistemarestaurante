@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import { Clock4, CheckCircle, CookingPot } from 'lucide-react';
 import classNames from 'classnames';
 import { fetchOrders, createOrder, updateOrderStatus, Order, OrderStatus } from '@/services/orders';
+import { toast } from 'react-hot-toast';
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -28,8 +29,12 @@ export default function OrdersPage() {
         const allOrders = await fetchOrders();
         const filtered = allOrders.filter(order => order.companyId === user.companyId);
         setOrders(filtered);
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          'Erro ao carregar pedidos.';
+        toast.error(message);
       } finally {
         setLoading(false);
       }
@@ -40,6 +45,7 @@ export default function OrdersPage() {
 
   const handleCreateOrder = async () => {
     if (!table || !items) return;
+
     try {
       const newOrder = await createOrder({
         table,
@@ -50,26 +56,36 @@ export default function OrdersPage() {
       setOrders(prev => [...prev, newOrder]);
       setTable('');
       setItems('');
-    } catch (error) {
-      console.error(error);
+      toast.success('Pedido criado com sucesso!');
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao criar pedido.';
+      toast.error(message);
     }
   };
 
   const handleUpdateStatus = async (order: Order) => {
-  let nextStatus: OrderStatus;
+    let nextStatus: OrderStatus;
 
-  if (order.status === 'Em preparo') nextStatus = 'Pronto';
-  else if (order.status === 'Pronto') nextStatus = 'Entregue';
-  else return;
+    if (order.status === 'Em preparo') nextStatus = 'Pronto';
+    else if (order.status === 'Pronto') nextStatus = 'Entregue';
+    else return;
 
-  try {
-    console.log(`Atualizando pedido ${order.id} para status ${nextStatus}`);
-    const updatedOrder = await updateOrderStatus(order.id, nextStatus);
-    setOrders(prev => prev.map(o => (o.id === updatedOrder.id ? updatedOrder : o)));
-  } catch (error) {
-    console.error(error);
-  }
-};
+    try {
+      const updatedOrder = await updateOrderStatus(order.id, nextStatus);
+      setOrders(prev => prev.map(o => (o.id === updatedOrder.id ? updatedOrder : o)));
+      toast.success(`Status atualizado para ${nextStatus}`);
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao atualizar status do pedido.';
+      toast.error(message);
+    }
+  };
+
 
 
   if (loading) return <p className="text-center mt-10">Carregando pedidos...</p>;

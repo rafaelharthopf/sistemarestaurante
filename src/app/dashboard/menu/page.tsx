@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { CheckCircle, Ban, Pencil } from 'lucide-react';
 import { fetchMenuItems, createMenuItem, MenuItem } from '@/services/menu';
+import { toast } from 'react-hot-toast';
 
 export default function MenuPage() {
   const router = useRouter();
@@ -39,8 +40,12 @@ export default function MenuPage() {
         const items = await fetchMenuItems();
         const filtered = items.filter(item => item.companyId === user.companyId);
         setMenu(filtered);
-      } catch (err) {
-        console.error(err);
+      } catch (error: any) {
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          'Erro ao carregar o cardápio.';
+        toast.error(message);
       } finally {
         setLoading(false);
       }
@@ -61,6 +66,7 @@ export default function MenuPage() {
     }));
   };
 
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -71,13 +77,19 @@ export default function MenuPage() {
       const created = await createMenuItem({ ...newItem, companyId: user.companyId });
       setMenu(prev => [...prev, created]);
       setNewItem({ name: '', description: '', price: 0, category: '', available: true });
-    } catch (err) {
-      setError('Erro ao criar item do menu');
-      console.error(err);
+      toast.success('Item do menu criado com sucesso!');
+    } catch (err: any) {
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        'Erro ao criar item do menu.';
+      setError(message);
+      toast.error(message);
     } finally {
       setCreating(false);
     }
   };
+
 
   if (loading) return <p className="text-center mt-10">Carregando cardápio...</p>;
 
@@ -190,8 +202,8 @@ export default function MenuPage() {
                   <div className="flex justify-between items-center">
                     <span
                       className={`text-sm font-medium px-3 py-1 rounded-full flex items-center ${item.available
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
                         }`}
                     >
                       {item.available ? (

@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { CookingPot, CheckCircle, Timer } from 'lucide-react';
 import { fetchOrders, updateOrderStatus, Order, OrderStatus } from '@/services/orders';
+import { toast } from 'react-hot-toast';
 
 export default function KitchenPage() {
   const router = useRouter();
@@ -25,12 +26,17 @@ export default function KitchenPage() {
         const allOrders = await fetchOrders();
         const filtered = allOrders.filter(order => order.companyId === user.companyId);
         setOrders(filtered);
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          'Erro ao carregar pedidos.';
+        toast.error(message);
       } finally {
         setLoading(false);
       }
     };
+
 
     loadOrders();
   }, [user, router]);
@@ -44,10 +50,15 @@ export default function KitchenPage() {
 
     try {
       const updated = await updateOrderStatus(order.id, nextStatus);
-      console.log('Pedido atualizado:', updated);
       setOrders(prev => prev.map(o => (o.id === updated.id ? updated : o)));
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
+      toast.success('Status do pedido atualizado com sucesso!');
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao atualizar status do pedido.';
+
+      toast.error(message);
     }
   };
 

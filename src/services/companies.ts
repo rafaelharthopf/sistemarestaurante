@@ -19,17 +19,14 @@ function getAuthHeaders() {
 async function handleResponse(res: Response, context: string) {
   if (!res.ok) {
     let errorMessage = `${context} - Código: ${res.status}`;
-
     try {
       const errorData = await res.json();
       errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
     } catch {
-      // se não vier JSON
       const text = await res.text();
       if (text) errorMessage += ` - ${text}`;
     }
 
-    console.error(errorMessage);
     throw new Error(errorMessage);
   }
   return res.json();

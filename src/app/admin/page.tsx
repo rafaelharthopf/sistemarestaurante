@@ -24,7 +24,6 @@ export default function AdminPage() {
         const companies = await fetchCompanies();
         setCompanyList(companies);
       } catch (error) {
-        console.error(error);
         alert('Erro ao carregar empresas');
       }
     }
@@ -44,7 +43,6 @@ export default function AdminPage() {
       setCompanyList((prev) => [...prev, added]);
       setCompanyName('');
     } catch (error) {
-      console.error(error);
       alert('Erro ao cadastrar empresa');
     }
   };

@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import { getCurrentUser } from '@/lib/auth';
 import Footer from '@/components/Footer';
 import { fetchCompanies, updateCompany } from '@/services/companies';
+import { toast } from 'react-hot-toast';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -25,16 +26,16 @@ export default function SettingsPage() {
         const company = companies.find(c => c.id === user.companyId);
 
         if (!company) {
-          alert('Empresa não encontrada.');
+          toast.error('Empresa não encontrada.');
           router.push('/dashboard');
           return;
         }
 
         setCompanyId(company.id);
         setCompanyName(company.name || '');
-      } catch (error) {
-        console.error(error);
-        alert('Erro ao carregar dados da empresa');
+      } catch (error: any) {
+        const message = error?.message || 'Erro ao carregar dados da empresa.';
+        toast.error(message);
       } finally {
         setLoading(false);
         setHasLoaded(true);
@@ -42,25 +43,25 @@ export default function SettingsPage() {
     };
 
     loadCompany();
-}, [user, hasLoaded, router]);
+  }, [user, hasLoaded, router]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!companyId) {
-      alert('Empresa não identificada.');
+      toast.error('Empresa não identificada.');
       return;
     }
 
     try {
-      await updateCompany(companyId, {
-        name: companyName,
-      });
-      alert('Configurações salvas com sucesso!');
-    } catch (error) {
-      console.error(error);
-      alert('Erro ao salvar configurações');
+      await updateCompany(companyId, { name: companyName });
+      toast.success('Configurações salvas com sucesso!');
+    } catch (error: any) {
+      const message = error?.message || 'Erro ao salvar configurações.';
+      toast.error(message);
     }
   };
+
 
   if (loading) {
     return <p className="text-center py-10">Carregando...</p>;

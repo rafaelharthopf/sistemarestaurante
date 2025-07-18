@@ -9,6 +9,7 @@ import { ChefHat, ClipboardList, Utensils, Users, FileBarChart2, Settings } from
 import { getPermissionsByRoleId } from '@/lib/permissions';
 import { fetchCompanies, Company } from '@/services/companies';
 import { fetchRoles, Role } from '@/services/roles';
+import { toast } from 'react-hot-toast';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -20,7 +21,6 @@ export default function DashboardPage() {
   useEffect(() => {
     async function loadData() {
       const user = getCurrentUser();
-      console.log('User completo:', user);
       if (!user) {
         router.replace('/login');
         return;
@@ -37,11 +37,16 @@ export default function DashboardPage() {
         const rolePermissions = getPermissionsByRoleId(user.roleId);
         setPermissions(rolePermissions);
 
-      } catch (error) {
-        console.error('Erro ao carregar dados:', error);
+      } catch (error: any) {
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          'Erro ao carregar dados do sistema.';
+        toast.error(message);
       } finally {
         setIsLoading(false);
       }
+
     }
 
     loadData();
@@ -54,10 +59,6 @@ export default function DashboardPage() {
   const user = getCurrentUser();
 
   const userRoleName = roles.find(r => Number(r.id) === Number(user?.roleId))?.name || 'Sem função';
-  console.log('Roles:', roles);
-console.log('User roleId:', user?.roleId);
-
-
 
   return (
     <>

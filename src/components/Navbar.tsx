@@ -6,6 +6,7 @@ import { fetchCompanies, Company } from '@/services/companies';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChefHat } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 type User = {
   id: number;
@@ -35,8 +36,9 @@ export default function Navbar() {
         const companies: Company[] = await fetchCompanies();
         const company = companies.find(c => Number(c.id) === Number(currentUser.companyId));
         setCompanyName(company?.name || '');
-      } catch (error) {
-        console.error('Erro ao carregar empresas:', error);
+      } catch (error: any) {
+        const message = error?.message || 'Erro ao carregar empresas.';
+        toast.error(message);
       } finally {
         setIsLoading(false);
       }
@@ -44,6 +46,7 @@ export default function Navbar() {
 
     loadData();
   }, [router]);
+
 
   function handleLogout() {
     logout();

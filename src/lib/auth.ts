@@ -16,8 +16,6 @@ export async function login(email: string, password: string) {
       }
     );
 
-    console.log(response.data);
-
     const data = response.data;
 
     if (typeof window !== 'undefined') {

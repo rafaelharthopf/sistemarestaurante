@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { fetchUsers, User1 } from '@/services/users';
+import { toast } from 'react-hot-toast';
 
 export default function UsersPage() {
   const router = useRouter();
@@ -28,8 +29,9 @@ export default function UsersPage() {
         const allUsers = await fetchUsers();
         const filtered = allUsers.filter(u => u.companyId === currentUser.companyId);
         setCompanyUsers(filtered);
-      } catch (error) {
-        console.error('Erro ao buscar usuários:', error);
+      } catch (error: any) {
+        const message = error?.message || 'Erro ao buscar usuários.';
+        toast.error(message);
         setCompanyUsers([]);
       } finally {
         setLoading(false);
