@@ -8,8 +8,9 @@ export type User1 = {
   password: string;
 };
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
+const URL_PROD = process.env.NEXT_PUBLIC_URL_PROD!;
 export async function fetchUsers(): Promise<User1[]> {
-  const res = await fetch('https://api-sistema-restaurante.onrender.com/users', { 
+  const res = await fetch(URL_PROD, { 
     cache: 'no-store',
     headers: { 
       'Content-Type': 'application/json',

@@ -11,6 +11,7 @@ import {
 import Footer from '@/components/Footer'
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
+const URL_PROD = process.env.NEXT_PUBLIC_URL_PROD!;
 
 type VendaPorDia = {
   dia: string;
@@ -34,7 +35,7 @@ export default function ReportsPage() {
       const companyId = 1;
 
       try {
-        const res = await fetch(`https://api-sistema-restaurante.onrender.com/reports/${companyId}`, {
+        const res = await fetch(`${URL_PROD}/reports/${companyId}`, {
           headers: {
             'Content-Type': 'application/json',
             'x-api-key': API_KEY

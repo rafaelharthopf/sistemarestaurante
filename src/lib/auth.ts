@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://api-sistema-restaurante.onrender.com';
+const API_URL = process.env.NEXT_PUBLIC_URL_PROD!;;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
 
 export async function login(email: string, password: string) {

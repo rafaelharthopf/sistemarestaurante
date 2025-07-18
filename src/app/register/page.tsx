@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Eye, EyeOff, Mail, Lock, ChefHat, User, Shield } from 'lucide-react';
 import Footer from '@/components/Footer';
 
-const API_URL = 'https://api-sistema-restaurante.onrender.com';
+const API_URL = process.env.NEXT_PUBLIC_URL_PROD!;;
 
 export default function RegisterPage() {
   const [name, setName] = useState('');

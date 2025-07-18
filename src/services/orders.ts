@@ -8,9 +8,10 @@ export type Order = {
 };
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
+const URL_PROD = process.env.NEXT_PUBLIC_URL_PROD!;
 
 export async function fetchOrders(): Promise<Order[]> {
-  const res = await fetch('https://api-sistema-restaurante.onrender.com/orders', { 
+  const res = await fetch(`${URL_PROD}/orders`, { 
     cache: 'no-store',
     headers: {
         'Content-Type': 'application/json',
@@ -27,7 +28,7 @@ export async function createOrder(data: {
   status: 'Em preparo' | 'Pronto' | 'Entregue';
   companyId: number;
 }): Promise<Order> {
-  const res = await fetch('https://api-sistema-restaurante.onrender.com/orders', {
+  const res = await fetch(`${URL_PROD}/orders`, {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
@@ -42,7 +43,7 @@ export async function createOrder(data: {
 export type OrderStatus = "Em preparo" | "Pronto" | "Entregue";
 
 export async function updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
-  const res = await fetch(`https://api-sistema-restaurante.onrender.com/orders/${id}`, {
+  const res = await fetch(`${URL_PROD}/orders/${id}`, {
     method: 'PATCH',
     headers: { 
       'Content-Type': 'application/json', 

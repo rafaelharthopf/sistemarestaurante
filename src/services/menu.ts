@@ -9,9 +9,10 @@ export interface MenuItem {
 }
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY!;
+const URL_PROD = process.env.NEXT_PUBLIC_URL_PROD!;
 
 export async function fetchMenuItems(): Promise<MenuItem[]> {
-  const res = await fetch('https://api-sistema-restaurante.onrender.com/menu', {
+  const res = await fetch(`${URL_PROD}/menu`, {
     headers: { 
       'Content-Type': 'application/json',
       'x-api-key': API_KEY
@@ -22,7 +23,7 @@ export async function fetchMenuItems(): Promise<MenuItem[]> {
 }
 
 export async function createMenuItem(data: Omit<MenuItem, 'id'>): Promise<MenuItem> {
-  const res = await fetch('https://api-sistema-restaurante.onrender.com/menu', {
+  const res = await fetch(`${URL_PROD}/menu`, {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
